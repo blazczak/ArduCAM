@@ -14,12 +14,14 @@ using namespace std;
 
 typedef struct timeval TIME;
 #define GPIO_NUM 2
+#define GPIO_TOGGLE 7
+#define GPIO_ENABLE 17
 int digitalNum[GPIO_NUM];
 int status[GPIO_NUM];
 int lastStatus[GPIO_NUM];
 void init(){
-	digitalNum[0] = 7;
-	digitalNum[1] = 11;
+	digitalNum[0] = GPIO_TOGGLE;
+	digitalNum[1] = GPIO_ENABLE;
     wiringPiSetup() ;
 	for(int i = 0 ; i < GPIO_NUM ; ++i){
 		pinMode (digitalNum[i], OUTPUT) ;
@@ -89,8 +91,8 @@ int initCamera(VideoCapture &cap){
     }
     char *i2c = "i2cset -y 1 0x70 0x00 0x01";
     system(i2c);
-    digitalWrite(7,0);
-    digitalWrite(11,0);
+    digitalWrite(GPIO_TOGGLE,0);
+    digitalWrite(GPIO_ENABLE,0);
 
     // open the default camera using default API
     cap.open(0);
@@ -110,8 +112,8 @@ int initCamera(VideoCapture &cap){
     cap.grab();
     i2c = "i2cset -y 1 0x70 0x00 0x02";
     system(i2c);
-    digitalWrite(7,1);
-    digitalWrite(11,0);
+    digitalWrite(GPIO_TOGGLE,1);
+    digitalWrite(GPIO_ENABLE,0);
     sendCommand();
     cap.grab();
     sleep(1);
@@ -126,9 +128,9 @@ int main(int, char **)
     VideoCapture cap;
     initCamera(cap);
 
-    cap.set(CV_CAP_PROP_FRAME_WIDTH,320);
-    cap.set(CV_CAP_PROP_FRAME_HEIGHT,240);
-    // cap.set(CV_CAP_PROP_FPS,30);
+    cap.set(CAP_PROP_FRAME_WIDTH,320);
+    cap.set(CAP_PROP_FRAME_HEIGHT,240);
+    // cap.set(CAP_PROP_FPS,30);
     //--- GRAB AND WRITE LOOP
     cout << "Start grabbing" << endl
          << "Press any key to terminate" << endl;
@@ -146,10 +148,10 @@ int main(int, char **)
         
         switch(flag){
         case 1:     //camera b
-            digitalWrite(7,1) ;
+            digitalWrite(GPIO_TOGGLE,1) ;
             break;
         case 2:     //camera a
-            digitalWrite(7,0) ;
+            digitalWrite(GPIO_TOGGLE,0) ;
             break;
         }
         
