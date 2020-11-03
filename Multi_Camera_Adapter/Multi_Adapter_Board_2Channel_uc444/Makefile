@@ -1,5 +1,5 @@
 CXX         = g++
-CXXFLAGS    = `pkg-config --cflags --libs opencv`  #sudo apt-get install libopencv-dev
+CXXFLAGS    = `pkg-config --cflags --libs opencv4`  #sudo apt-get install libopencv-dev
 LIBS		= -L/usr/include -lwiringPi
 ODIR		= obj
 _OBJ        = arducam_multi_adapter_uc444.o
